@@ -1,0 +1,98 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>微信自定义分享页面样例</title>
+</head>
+
+<body>
+<script src="jquery.min.js"></script>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script type="text/javascript">
+    function is_weixin() {
+        var ua = navigator.userAgent.toLowerCase();
+        if (ua.match(/MicroMessenger/i) == "micromessenger") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    $(function() {
+        if (is_weixin() == true) {
+
+            var url = encodeURIComponent(window.location.href.split('#')[0]);
+            url = '/getWxJsSDKConfig.php?url=' + url ;//+ "&callback=?";
+            $.getJSON(url, function(result) {
+				
+			//alert(result['appId']);
+			//alert(result['timestamp']);
+			//alert(result['nonceStr']);
+			//alert(result['signature']);
+			wx.config({
+				  debug: true,
+				  appId: result['appId'], // 必填，公众号的唯一标识
+				  timestamp: result['timestamp'], // 必填，生成签名的时间戳
+				  nonceStr: result['nonceStr'], // 必填，生成签名的随机串
+				  signature: result['signature'], // 必填，签名
+				  jsApiList:
+					[
+						 'onMenuShareTimeline',
+						 'onMenuShareQQ',
+						 'onMenuShareWeibo',
+						 'onMenuShareAppMessage'
+					]
+			  });
+				
+            });
+        }
+    });
+
+
+var title = "标题";
+var link = window.location.href;
+var desc = "描述";
+var imgUrl = "http://www.xxxx.com/images/share.jpg";
+
+var isSave = false;
+var shareData = {
+	title: title,
+	link: link,
+	desc: desc,
+	imgUrl: imgUrl,
+	success: function () {
+		if(isSave){
+			
+		}
+	}
+}
+
+var shareData2 = {
+	title: title,
+	link: link,
+	desc: desc,
+	imgUrl: imgUrl,
+	success: function () {
+		if(isSave){
+			
+		}
+	}
+}
+
+wx.ready(function () {
+
+	//分享到朋友圈
+	wx.onMenuShareTimeline(shareData);
+	//发送给朋友
+	wx.onMenuShareAppMessage(shareData2);
+	//分享到QQ
+	wx.onMenuShareQQ(shareData);
+	//分享到微博
+	wx.onMenuShareWeibo(shareData);
+});
+</script>
+
+</body>
+</html>
